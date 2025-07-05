@@ -14,21 +14,31 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  fullName: z.string().min(2, {
+    message: "至少输入两个字符",
+  }),
+  email: z.string().email({
+    message: "请输入有效的电子邮件地址",
   }),
 });
 
 type FormType = "Sign In" | "Sign Up";
 
 const AuthForm = ({ type }: { type: FormType }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      fullName: "",
+      email: "",
     },
   });
 
@@ -36,6 +46,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+
   return (
     <>
       <Form {...form}>
@@ -43,23 +54,76 @@ const AuthForm = ({ type }: { type: FormType }) => {
           <h1 className="form-title">
             {type === "Sign In" ? "Sign In" : "Sign Up"}
           </h1>
+          {type === "Sign Up" && (
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="shad-form-item">
+                    <FormLabel className="shad-form-label">Full Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Eenter your full name"
+                        className=""
+                        {...field}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage className="shad-form-message" />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
-            name="username"
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="Username" {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
+                <div className="shad-form-item">
+                  <FormLabel className="shad-form-label">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Eenter your email"
+                      className=""
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage className="shad-form-message" />
               </FormItem>
             )}
           />
-          <Button type="submit" className="form-submit-button">
-            提交
+          <Button
+            type="submit"
+            className="form-submit-button rounded-full"
+            disabled={isLoading}
+          >
+            {type === "Sign In" ? "登陆" : "注册"}
+            {isLoading && (
+              <Image
+                src="../assets/icons/loader.svg"
+                alt="loading"
+                width={24}
+                height={24}
+                className=""
+              />
+            )}
           </Button>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <div className="body-2 flex justify-center">
+            <p className="text-light-100">
+              {type === "Sign In"
+                ? "Don't have an account?"
+                : "Already have an account?"}
+            </p>
+            <Link
+              href={type === "Sign In" ? "/sign-up" : "/sign-in"}
+              className="ml-1 font-medium text-brand"
+            >
+              {type === "Sign In" ? "Sign Up" : "Sign In"}
+            </Link>
+          </div>
         </form>
       </Form>
     </>
