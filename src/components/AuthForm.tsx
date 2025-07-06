@@ -18,6 +18,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { createAccount, signInUser } from "@/lib/actions/user.actions";
+import OTPModal from "@/components/OTPModal";
 
 const formSchema = z.object({
   fullName: z.string().min(2, {
@@ -57,7 +58,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
             })
           : await signInUser({ email: values.email });
       setAccountId(user.accountId);
-      console.log("accountId", accountId);
     } catch (error) {
       setErrorMessage("Failed to create account. Please try again.");
     } finally {
@@ -144,6 +144,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
           </div>
         </form>
       </Form>
+      {accountId && (
+        <OTPModal email={form.getValues("email")} accountId={accountId} />
+      )}
     </>
   );
 };
