@@ -18,7 +18,13 @@ import Image from "next/image";
 import { verifySecret, sendEmailOTP } from "@/lib/actions/user.actions";
 import { Button } from "@/components/ui/button";
 
-const OtpModal = ({ email, accountId }: { email: string; accountId: any }) => {
+const OtpModal = ({
+  email,
+  accountId,
+}: {
+  email: string;
+  accountId: string;
+}) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [password, setPassword] = useState("");
@@ -29,9 +35,9 @@ const OtpModal = ({ email, accountId }: { email: string; accountId: any }) => {
     setIsLoading(true);
     console.log(accountId, email, password);
     try {
-      const sesseionId = await verifySecret({ accountId, password });
-      console.log({ sesseionId });
-      if (sesseionId) {
+      const sessionId = await verifySecret({ accountId, password });
+      console.log({ sessionId });
+      if (sessionId) {
         router.push("/");
       }
     } catch (error) {
@@ -65,7 +71,7 @@ const OtpModal = ({ email, accountId }: { email: string; accountId: any }) => {
             <span className="pl-1 text-brand">{email}</span>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <InputOTP maxLength={6}>
+        <InputOTP maxLength={6} value={password} onChange={setPassword}>
           <InputOTPGroup className="flex justify-between items-center gap-3 mb-3 w-full max-w-md mx-auto">
             <InputOTPSlot index={0} className="shad-otp-slot" />
             <InputOTPSlot index={1} className="shad-otp-slot" />

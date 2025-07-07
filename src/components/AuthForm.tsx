@@ -34,7 +34,7 @@ type FormType = "Sign In" | "Sign Up";
 const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [accountId, setAccountId] = useState(null);
+  const [accountId, setAccountId] = useState<string>("");
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({

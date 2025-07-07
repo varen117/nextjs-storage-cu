@@ -13,15 +13,9 @@ export const createAccount = async ({
   email: string;
 }) => {
   const exisitingUser = await getUserByEmail(email);
-  const accountIdString = await sendEmailOTP({ email });
-  if (!accountIdString) {
+  const accountId = await sendEmailOTP({ email });
+  if (!accountId) {
     throw new Error("Failed to send email OTP");
-  }
-
-  // 将字符串转换为整数（如果需要存储为整数）
-  const accountId = parseInt(accountIdString, 10);
-  if (isNaN(accountId)) {
-    throw new Error("Invalid account ID format");
   }
 
   //用户不存在
@@ -34,7 +28,7 @@ export const createAccount = async ({
       {
         fullName,
         email,
-        accountId, // 现在是整数
+        accountId, // 保持为字符串格式
         avatar:
           "https://upload.wikimedia.org/wikipedia/commons/9/9e/Male_Avatar.jpg",
       },
@@ -81,6 +75,8 @@ export const verifySecret = async ({
   password: string;
 }) => {
   try {
+    console.log(accountId);
+    console.log(password);
     const { account } = await createAdminClient();
     const session = await account.createSession(accountId, password);
     (await cookies()).set("appwrite_session", session.secret, {
