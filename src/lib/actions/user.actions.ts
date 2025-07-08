@@ -1,9 +1,10 @@
 "use server"; //可以确保在服务端运行
-import { createAdminClient } from "@/lib/appwrite";
+import { createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { appwriteConfig } from "@/lib/appwrite/config";
 import { ID, Query } from "node-appwrite";
 import { parseStringify } from "@/lib/utils";
 import { cookies } from "next/headers";
+import { avatarPlaceholderUrl } from "@/constants";
 
 export const createAccount = async ({
   fullName,
@@ -12,14 +13,14 @@ export const createAccount = async ({
   fullName: string;
   email: string;
 }) => {
-  const exisitingUser = await getUserByEmail(email);
+  const existingUser = await getUserByEmail(email);
   const accountId = await sendEmailOTP({ email });
   if (!accountId) {
     throw new Error("Failed to send email OTP");
   }
 
   //用户不存在
-  if (!exisitingUser) {
+  if (!existingUser) {
     const { databases } = await createAdminClient();
     await databases.createDocument(
       appwriteConfig.databaseId,
@@ -28,9 +29,8 @@ export const createAccount = async ({
       {
         fullName,
         email,
-        accountId, // 保持为字符串格式
-        avatar:
-          "https://upload.wikimedia.org/wikipedia/commons/9/9e/Male_Avatar.jpg",
+        accountId,
+        avatar: avatarPlaceholderUrl,
       },
     );
   }
@@ -89,4 +89,19 @@ export const verifySecret = async ({
   } catch (error) {
     handleError(error, "Error verifying secret");
   }
+};
+
+export const getCurrentUser = async () => {
+  const { databases, account } = await createSessionClient();
+  const result = await account.get();
+  const user = await databases.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.usersCollectionId,
+    [Query.equal("accountId", result.$id)],
+  );
+  if (user.total > 0) {
+    console.log(user);
+    return parseStringify(user.documents[0]);
+  }
+  return null;
 };
