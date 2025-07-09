@@ -1,10 +1,11 @@
 "use server"; //可以确保在服务端运行
 import { createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { appwriteConfig } from "@/lib/appwrite/config";
-import { ID, Query } from "node-appwrite";
+import { ID, Query, Account, Client } from "node-appwrite";
 import { parseStringify } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { avatarPlaceholderUrl } from "@/constants";
+import { redirect } from "next/navigation";
 
 export const createAccount = async ({
   fullName,
@@ -63,10 +64,6 @@ const handleError = (error: unknown, message: string) => {
   throw error;
 };
 
-export const signInUser = async ({ email }: { email: string }) => {
-  return "";
-};
-
 export const verifySecret = async ({
   accountId,
   password,
@@ -104,4 +101,29 @@ export const getCurrentUser = async () => {
     return parseStringify(user.documents[0]);
   }
   return null;
+};
+//注销用户
+export const signOutUser = async () => {
+  try {
+    const client = new Client();
+    const account = new Account(client);
+
+    await account.deleteSession("current");
+    (await cookies()).delete("appwrite_session");
+  } catch (error) {
+    handleError(error, "error to sign out user");
+  } finally {
+    redirect("/sign-in");
+  }
+};
+//用户登陆
+export const signInUser = async ({ email }: { email: string }) => {
+  try {
+    const client = new Client();
+    const account = new Account(client);
+  } catch (error) {
+    handleError(error, "Error verifying email");
+  } finally {
+    redirect("/");
+  }
 };
