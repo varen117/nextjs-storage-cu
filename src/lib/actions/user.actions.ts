@@ -118,6 +118,7 @@ export const signInUser = async ({ email }: { email: string }) => {
   try {
     //通过邮箱获取用户信息
     const existingUser = await getUserByEmail(email);
+    console.log(existingUser);
     // Send OTP
     if (existingUser) {
       await sendEmailOTP({ email });
@@ -125,8 +126,7 @@ export const signInUser = async ({ email }: { email: string }) => {
         accountId: existingUser.accountId,
       });
     }
-    return parseStringify({ accoutId: null, error: "User not found" });
-    //
+    return parseStringify({ accountId: null, error: "User not found" });
   } catch (error) {
     handleError(error, "Error verifying email");
   }

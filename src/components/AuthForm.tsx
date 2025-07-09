@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,15 +19,6 @@ import Link from "next/link";
 import { createAccount, signInUser } from "@/lib/actions/user.actions";
 import OTPModal from "@/components/OTPModal";
 
-const formSchema = z.object({
-  fullName: z.string().min(2, {
-    message: "至少输入两个字符",
-  }),
-  email: z.string().email({
-    message: "请输入有效的电子邮件地址",
-  }),
-});
-
 type FormType = "Sign In" | "Sign Up";
 
 const AuthForm = ({ type }: { type: FormType }) => {
@@ -36,6 +26,16 @@ const AuthForm = ({ type }: { type: FormType }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [accountId, setAccountId] = useState<string>("");
 
+  // 动态创建表单验证 schema
+  const formSchema = z.object({
+    fullName:
+      type === "Sign Up"
+        ? z.string().min(2, { message: "至少输入两个字符" })
+        : z.string().optional(),
+    email: z.string().email({
+      message: "请输入有效的电子邮件地址",
+    }),
+  });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +57,24 @@ const AuthForm = ({ type }: { type: FormType }) => {
               email: values.email,
             })
           : await signInUser({ email: values.email });
-      setAccountId(user.accountId);
+      if (user?.error) {
+        setErrorMessage(
+          type === "Sign In"
+            ? "User does not exist, please register an account first"
+            : "Registration failed, please try again",
+        );
+        return;
+      }
+      if (user.accountId) {
+        setAccountId(user.accountId);
+      } else {
+        setErrorMessage(
+          type === "Sign In"
+            ? "Login failed, please check the email address."
+            : "Registration failed, please try again.",
+        );
+        return;
+      }
     } catch (error) {
       setErrorMessage("Failed to create account. Please try again.");
     } finally {
