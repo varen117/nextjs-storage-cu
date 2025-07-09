@@ -1,8 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import OTPModal from "@/components/OTPModal";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,11 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { createAccount, signInUser } from "@/lib/actions/user.actions";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
-import { createAccount, signInUser } from "@/lib/actions/user.actions";
-import OTPModal from "@/components/OTPModal";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type FormType = "Sign In" | "Sign Up";
 
@@ -61,7 +61,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
         setErrorMessage(
           type === "Sign In"
             ? "User does not exist, please register an account first"
-            : "Registration failed, please try again",
+            : "Registration failed, please try again"
         );
         return;
       }
@@ -71,7 +71,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
         setErrorMessage(
           type === "Sign In"
             ? "Login failed, please check the email address."
-            : "Registration failed, please try again.",
+            : "Registration failed, please try again."
         );
         return;
       }

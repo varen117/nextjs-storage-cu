@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import FileUploader from "@/components/FileUploader";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -9,15 +11,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { Separator } from "@/components/ui/separator";
 import { navItems } from "@/constants";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import FileUploader from "@/components/FileUploader";
-import { Button } from "@/components/ui/button";
 import { signOutUser } from "@/lib/actions/user.actions";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 interface Props {
   fullName: string;
   avatar: string;
@@ -72,7 +72,7 @@ const MobileNavigation = ({ fullName, avatar, email, accountId }: Props) => {
                       <li
                         className={cn(
                           "mobile-nav-item",
-                          pathname === url && "shad-active",
+                          pathname === url && "shad-active"
                         )}
                       >
                         <Image
@@ -82,7 +82,7 @@ const MobileNavigation = ({ fullName, avatar, email, accountId }: Props) => {
                           height={24}
                           className={cn(
                             "nav-icon",
-                            pathname === url && "nav-icon-active",
+                            pathname === url && "nav-icon-active"
                           )}
                         />
                         <p>{name}</p>

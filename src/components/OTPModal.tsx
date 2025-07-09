@@ -7,16 +7,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { sendEmailOTP, verifySecret } from "@/lib/actions/user.actions";
 import Image from "next/image";
-import { verifySecret, sendEmailOTP } from "@/lib/actions/user.actions";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const OtpModal = ({
   email,
