@@ -72,8 +72,6 @@ export const verifySecret = async ({
   password: string;
 }) => {
   try {
-    console.log(accountId);
-    console.log(password);
     const { account } = await createAdminClient();
     const session = await account.createSession(accountId, password);
     (await cookies()).set("appwrite_session", session.secret, {
@@ -97,7 +95,6 @@ export const getCurrentUser = async () => {
     [Query.equal("accountId", result.$id)],
   );
   if (user.total > 0) {
-    console.log(user);
     return parseStringify(user.documents[0]);
   }
   return null;
@@ -119,11 +116,18 @@ export const signOutUser = async () => {
 //用户登陆
 export const signInUser = async ({ email }: { email: string }) => {
   try {
-    const client = new Client();
-    const account = new Account(client);
+    //通过邮箱获取用户信息
+    const existingUser = await getUserByEmail(email);
+    // Send OTP
+    if (existingUser) {
+      await sendEmailOTP({ email });
+      return parseStringify({
+        accountId: existingUser.accountId,
+      });
+    }
+    return parseStringify({ accoutId: null, error: "User not found" });
+    //
   } catch (error) {
     handleError(error, "Error verifying email");
-  } finally {
-    redirect("/");
   }
 };
