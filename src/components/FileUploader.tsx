@@ -17,32 +17,45 @@ interface Props {
 
 const FileUploader = ({ ownerId, accountId, className }: Props) => {
   const onDrop = useCallback((acceptedFiles: any) => {
-    setFiles(acceptedFiles);
-    //批量上传文件
-    const uploadPromises = acceptedFiles.map(async (file: File) => {
-      //移除不符合要求的过大的上传文件
-      if (file.size > MAX_FILE_SIZE) {
-        setFiles((prevFiles) => prevFiles.filter((f) => f.name !== file.name));
+    // 追加有效文件到现有文件列表，统一处理所有验证
+    setFiles((prevFiles) => {
+      const existingFileNames = prevFiles.map((f) => f.name);
+      const validNewFiles: File[] = [];
 
-        //
-        return toast("File too large", {
-          description: (
-            <span>
-              <strong>{file.name}</strong> is too large. Max file size is 50MB.
-            </span>
-          ),
-          style: {
-            background: "#FA7275",
-            borderRadius: 20,
-          },
-          classNames: {
-            closeButton: "true",
-            description: "!text-white",
-            title: "!text-white !font-bold",
-          },
-        });
-      }
-      //
+      acceptedFiles.forEach((file: File) => {
+        // 检查文件大小
+        if (file.size > MAX_FILE_SIZE) {
+          // 显示错误提示
+          toast("File too large", {
+            description: (
+              <span>
+                <strong>{file.name}</strong> is too large. Max file size is
+                50MB.
+              </span>
+            ),
+            style: {
+              background: "#FA7275",
+              borderRadius: 20,
+            },
+            classNames: {
+              closeButton: "true",
+              description: "!text-white",
+              title: "!text-white !font-bold",
+            },
+          });
+          return; // 跳过这个文件
+        }
+
+        // 检查重复文件（以第一次上传的为准）
+        if (existingFileNames.includes(file.name)) {
+          return; // 跳过重复文件
+        }
+
+        // 文件有效，添加到列表
+        validNewFiles.push(file);
+      });
+
+      return [...prevFiles, ...validNewFiles];
     });
   }, []);
 
@@ -51,7 +64,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
 
   const handleRemoveFile = (
     e: MouseEvent<HTMLImageElement>,
-    fileName: string,
+    fileName: string
   ) => {
     // 阻止事件冒泡，防止点击删除按钮时触发父级的上传区域点击事件
     e.stopPropagation();
