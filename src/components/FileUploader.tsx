@@ -188,6 +188,7 @@ const FileUploader = ({ ownerId, accountId }: Props) => {
                       alt="loader"
                       width={80}
                       height={26}
+                      unoptimized //unoptimized 跳过优化 - 直接显示原始 GIF
                     />
                   </div>
                 </div>
