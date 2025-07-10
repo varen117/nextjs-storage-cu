@@ -89,6 +89,7 @@ export const getCurrentUser = async () => {
     [Query.equal("accountId", result.$id)],
   );
   if (user.total > 0) {
+    console.log(user);
     return parseStringify(user.documents[0]);
   }
   return null;

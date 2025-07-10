@@ -3,4 +3,5 @@ interface UploadFileProps {
   ownerId: string;
   accountId: string;
   path: string;
+  fullName: string;
 }

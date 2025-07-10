@@ -6,13 +6,18 @@ import Image from "next/image";
 interface Props {
   userId: string;
   accountId: string;
+  fullName: string;
 }
-const Header = ({ userId, accountId }: Props) => {
+const Header = ({ userId, accountId, fullName }: Props) => {
   return (
     <header className="header">
       <Search />
       <div className="header-wrapper">
-        <FileUploader ownerId={userId} accountId={accountId} />
+        <FileUploader
+          ownerId={userId}
+          accountId={accountId}
+          fullName={fullName}
+        />
 
         <form
           action={async () => {

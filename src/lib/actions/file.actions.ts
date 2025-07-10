@@ -9,14 +9,16 @@ import {
 import { createAdminClient } from "@/lib/appwrite";
 import { InputFile } from "node-appwrite/file";
 import { appwriteConfig } from "@/lib/appwrite/config";
-import { ID } from "node-appwrite";
+import { ID, Models, Query } from "node-appwrite";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { getCurrentUser } from "@/lib/actions/user.actions";
 
 export const uploadFile = async ({
   file,
   ownerId,
   accountId,
   path,
+  fullName,
 }: UploadFileProps) => {
   const { storage, databases } = await createAdminClient();
   try {
@@ -39,6 +41,7 @@ export const uploadFile = async ({
       accountId,
       users: [],
       bucketFileId: bucketFile.$id,
+      fullName: fullName,
     };
     const newFile = await databases
       .createDocument(
@@ -60,4 +63,36 @@ export const uploadFile = async ({
   } catch (error) {
     handleError(error, "Upload file Failed");
   }
+};
+
+//获取文件
+export const getFiles = async () => {
+  const { databases } = await createAdminClient();
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      throw new Error("No user found");
+    }
+    const query = createQueries(currentUser);
+    const files = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      query,
+    );
+    console.log(parseStringify(files));
+    return parseStringify(files);
+  } catch (error) {
+    handleError(error, "Failed to get files");
+  }
+};
+//查询数据
+const createQueries = (currentUser: Models.Document) => {
+  const query = [
+    Query.or([
+      Query.equal("owner", [currentUser.$id]),
+      Query.contains("users", [currentUser.email]),
+    ]),
+  ];
+  // 复杂查询，条件，排序等
+  return query;
 };
