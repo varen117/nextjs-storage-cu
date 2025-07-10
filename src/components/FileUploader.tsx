@@ -2,10 +2,12 @@
 
 import Thumbnail from "@/components/Thumbnail";
 import { Button } from "@/components/ui/button";
+import { MAX_FILE_SIZE } from "@/constants";
 import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { MouseEvent, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "sonner";
 
 interface Props {
   ownerId: string;
@@ -16,12 +18,39 @@ interface Props {
 const FileUploader = ({ ownerId, accountId, className }: Props) => {
   const onDrop = useCallback((acceptedFiles: any) => {
     setFiles(acceptedFiles);
+    //批量上传文件
+    const uploadPromises = acceptedFiles.map(async (file: File) => {
+      //移除不符合要求的过大的上传文件
+      if (file.size > MAX_FILE_SIZE) {
+        setFiles((prevFiles) => prevFiles.filter((f) => f.name !== file.name));
+
+        //
+        return toast("File too large", {
+          description: (
+            <span>
+              <strong>{file.name}</strong> is too large. Max file size is 50MB.
+            </span>
+          ),
+          style: {
+            background: "#FA7275",
+            borderRadius: 20,
+          },
+          classNames: {
+            closeButton: "true",
+            description: "!text-white",
+            title: "!text-white !font-bold",
+          },
+        });
+      }
+      //
+    });
   }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const [files, setFiles] = useState<File[]>([]);
 
   const handleRemoveFile = (
-    e: React.MouseEvent<HTMLImageElement>,
+    e: MouseEvent<HTMLImageElement>,
     fileName: string,
   ) => {
     // 阻止事件冒泡，防止点击删除按钮时触发父级的上传区域点击事件
@@ -34,7 +63,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
       <input {...getInputProps()} />
       <Button type="button" className={cn("uploader-button")}>
         <Image
-          src="../assets/icons/upload.svg"
+          src="/assets/icons/upload.svg"
           alt="logo"
           width={24}
           height={24}
@@ -78,11 +107,6 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
             );
           })}
         </ul>
-      )}
-      {isDragActive ? (
-        <p>saf</p>
-      ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
       )}
     </div>
   );

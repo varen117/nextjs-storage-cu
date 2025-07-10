@@ -4,6 +4,7 @@ import MobileNavigation from "@/components/MobileNavigation";
 import Header from "@/components/Header";
 import { getCurrentUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
+import { Toaster } from "sonner";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   //获取当前用户
@@ -19,6 +20,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
         <Header />
         <div className="main-content">{children}</div>
       </section>
+      <Toaster />
     </main>
   );
 };

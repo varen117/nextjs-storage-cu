@@ -2,7 +2,7 @@
 import { createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { appwriteConfig } from "@/lib/appwrite/config";
 import { ID, Query, Account, Client } from "node-appwrite";
-import { parseStringify } from "@/lib/utils";
+import { handleError, parseStringify } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { avatarPlaceholderUrl } from "@/constants";
 import { redirect } from "next/navigation";
@@ -56,12 +56,6 @@ export const sendEmailOTP = async ({ email }: { email: string }) => {
   } catch (error) {
     handleError(error, "Error sending email OTP");
   }
-};
-
-//记录错误日志
-const handleError = (error: unknown, message: string) => {
-  console.log(error);
-  throw error;
 };
 
 export const verifySecret = async ({

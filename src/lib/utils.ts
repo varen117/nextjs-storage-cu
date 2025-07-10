@@ -38,7 +38,7 @@ export const getFileType = (fileName: string): FileTypeResult => {
  */
 export const getFileIcon = (
   extension: string | undefined,
-  type?: FileType | string
+  type?: FileType | string,
 ): string => {
   if (!extension) {
     return defaultIcons[type as FileType] || defaultIcons.other;
@@ -95,7 +95,7 @@ export const getSupportedExtensions = (type?: FileType): string[] => {
  */
 export const isSupportedFileType = (
   fileName: string,
-  allowedTypes?: FileType[]
+  allowedTypes?: FileType[],
 ): boolean => {
   const { type } = getFileType(fileName);
 
@@ -104,4 +104,10 @@ export const isSupportedFileType = (
   }
 
   return allowedTypes.includes(type);
+};
+
+//记录错误日志
+export const handleError = (error: unknown, message: string) => {
+  console.log(error);
+  throw error;
 };

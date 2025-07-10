@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@import 'tailwindcss';
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
 
 @plugin "tailwindcss-animate";
 
@@ -8,25 +8,25 @@
   --default-transition-duration: 150ms;
 
   /* Brand Colors */
-  --color-brand-100: #EA6365;
-  --color-brand: #FA7275;
+  --color-brand-100: #ea6365;
+  --color-brand: #fa7275;
 
   /* Custom Colors */
-  --color-red: #FF7474;
+  --color-red: #ff7474;
   --color-error: #b80000;
-  --color-green: #3DD9B3;
-  --color-blue: #56B8FF;
-  --color-pink: #EEA8FD;
-  --color-orange: #F9AB72;
+  --color-green: #3dd9b3;
+  --color-blue: #56b8ff;
+  --color-pink: #eea8fd;
+  --color-orange: #f9ab72;
 
   /* Light Colors */
-  --color-light-100: #333F4E;
-  --color-light-200: #A3B2C7;
-  --color-light-300: #F2F5F9;
-  --color-light-400: #F2F4F8;
+  --color-light-100: #333f4e;
+  --color-light-200: #a3b2c7;
+  --color-light-300: #f2f5f9;
+  --color-light-400: #f2f4f8;
 
   /* Dark Colors */
-  --color-dark-100: #04050C;
+  --color-dark-100: #04050c;
   --color-dark-200: #131524;
 
   /* Shadcn/ui Colors (using CSS variables) */
@@ -75,10 +75,13 @@
 
   /* Keyframes */
   @keyframes caret-blink {
-    0%, 70%, 100% {
+    0%,
+    70%,
+    100% {
       opacity: 1;
     }
-    20%, 50% {
+    20%,
+    50% {
       opacity: 0;
     }
   }
@@ -442,7 +445,7 @@ body {
 }
 
 .error-toast {
-  @apply bg-red !rounded-[10px];
+  @apply bg-red-500 text-white p-4 !rounded-[10px];
 }
 
 /* Header */
@@ -544,7 +547,7 @@ body {
 }
 
 .left-common-color {
-  background-color: #FA7275;
+  background-color: #fa7275;
 }
 
 /* Custom auth form styles */
@@ -559,7 +562,7 @@ body {
 
 .auth-form input:focus {
   outline: none;
-  border-color: #3B82F6;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -567,6 +570,3 @@ body {
   width: 100%;
   margin-bottom: 1rem;
 }
-
-
-
