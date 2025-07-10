@@ -36,7 +36,7 @@ const Page = async ({ params }: { params: Promise<{ types: string }> }) => {
       {files.total > 0 ? (
         <section className="file-list">
           {files.documents.map((file: Models.Document) => (
-            <Card key={file.$id} file={file} />
+            <Card file={file} />
           ))}
         </section>
       ) : (

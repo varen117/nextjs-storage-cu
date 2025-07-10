@@ -4,13 +4,11 @@ import Link from "next/link";
 import Thumbnail from "@/components/Thumbnail";
 import { convertFileSize, convertFileToUrl } from "@/lib/utils";
 import FormattedDateTime from "@/components/FormattedDateTime";
-interface Props {
-  key: string;
-  file: Models.Document;
-}
-const Card = ({ key, file }: Props) => {
+import ActionDropdown from "@/components/ActionDropdown";
+
+const Card = ({ file }: { file: Models.Document }) => {
   return (
-    <Link href={file.url} target="_blank" className="file-card" key={key}>
+    <Link href={file.url} target="_blank" className="file-card" key={file.$id}>
       <div className="flex justify-between">
         {/*添加缩略图*/}
         <Thumbnail
@@ -22,7 +20,7 @@ const Card = ({ key, file }: Props) => {
         />
         {/*  添加操作*/}
         <div className="flex flex-col items-end justify-between">
-          下拉菜单...
+          <ActionDropdown file={file} />
           <p className="body-1">{convertFileSize(file.size)}</p>
         </div>
       </div>
