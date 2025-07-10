@@ -16,10 +16,9 @@ const Card = ({ key, file }: Props) => {
         <Thumbnail
           type={file.type}
           extension={file.extension}
-          // url={"file.url"}
-          url={""}
+          url={file.url}
           className="!size-20"
-          imageClassName="!size-11"
+          imageClassName="!size-full"
         />
         {/*  添加操作*/}
         <div className="flex flex-col items-end justify-between">
