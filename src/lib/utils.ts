@@ -134,9 +134,10 @@ export const formatDateTime = (isoString: string | null | undefined) => {
   const date = new Date(isoString);
 
   // Get hours and adjust for 12-hour format
+  let year = date.getFullYear();
   let hours = date.getHours();
   const minutes = date.getMinutes();
-  const period = hours >= 12 ? "pm" : "am";
+  const period = hours >= 12 ? " pm" : " am";
 
   // Convert hours to 12-hour format
   hours = hours % 12 || 12;
@@ -145,20 +146,20 @@ export const formatDateTime = (isoString: string | null | undefined) => {
   const time = `${hours}:${minutes.toString().padStart(2, "0")}${period}`;
   const day = date.getDate();
   const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
   ];
   const month = monthNames[date.getMonth()];
 
-  return `${time}, ${day} ${month}`;
+  return `${year}-${month}-${day} ${time} `;
 };
