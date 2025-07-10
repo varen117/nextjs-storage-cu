@@ -9,7 +9,6 @@ import { Toaster } from "sonner";
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   //获取当前用户
   const currentUser = await getCurrentUser();
-  console.log(currentUser);
   if (!currentUser) {
     return redirect("/sign-in");
   }

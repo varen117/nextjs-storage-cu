@@ -33,10 +33,8 @@ const OtpModal = ({
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 阻止默认提交行为
     setIsLoading(true);
-    console.log(accountId, email, password);
     try {
       const sessionId = await verifySecret({ accountId, password });
-      console.log({ sessionId });
       if (sessionId) {
         router.push("/");
       }

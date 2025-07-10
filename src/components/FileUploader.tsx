@@ -70,7 +70,7 @@ const FileUploader = ({ ownerId, accountId }: Props) => {
       try {
         // 并行上传所有有效文件，等待所有上传完成
         const uploadPromises = validNewFiles.map((file) =>
-          uploadFile({ file, ownerId, accountId, path })
+          uploadFile({ file, ownerId, accountId, path }),
         );
         // 这样做的最主要原因是：需要等所有文件都上传完成后，才能统一处理上传结果（如移除已上传文件、显示成功或失败的提示），
         // 保证UI和数据状态与所有上传操作的最终结果保持一致，避免部分文件上传未完成时就提前更新界面或提示用户。
@@ -83,7 +83,7 @@ const FileUploader = ({ ownerId, accountId }: Props) => {
             .map((file) => file.name);
 
           return prevFiles.filter(
-            (file) => !successfullyUploadedFileNames.includes(file.name)
+            (file) => !successfullyUploadedFileNames.includes(file.name),
           );
         });
 
@@ -139,14 +139,14 @@ const FileUploader = ({ ownerId, accountId }: Props) => {
         });
       }
     },
-    [ownerId, accountId, path]
+    [ownerId, accountId, path],
   );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleRemoveFile = (
     e: MouseEvent<HTMLImageElement>,
-    fileName: string
+    fileName: string,
   ) => {
     // 阻止事件冒泡，防止点击删除按钮时触发父级的上传区域点击事件
     e.stopPropagation();
