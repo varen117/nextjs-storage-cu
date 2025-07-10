@@ -3,13 +3,16 @@ import Search from "@/components/Search";
 import { Button } from "@/components/ui/button";
 import { signOutUser } from "@/lib/actions/user.actions";
 import Image from "next/image";
-
-const Header = () => {
+interface Props {
+  userId: string;
+  accountId: string;
+}
+const Header = ({ userId, accountId }: Props) => {
   return (
     <header className="header">
       <Search />
       <div className="header-wrapper">
-        <FileUploader ownerId="" accountId="" className="" />
+        <FileUploader ownerId={userId} accountId={accountId} />
 
         <form
           action={async () => {

@@ -9,6 +9,7 @@ import { Toaster } from "sonner";
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   //获取当前用户
   const currentUser = await getCurrentUser();
+  console.log(currentUser);
   if (!currentUser) {
     return redirect("/sign-in");
   }
@@ -17,7 +18,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
       <Sidebar {...currentUser} />
       <section className="flex h-full flex-1 flex-col">
         <MobileNavigation {...currentUser} />
-        <Header />
+        <Header userId={currentUser.$id} accountId={currentUser.accountId} />
         <div className="main-content">{children}</div>
       </section>
       <Toaster />
