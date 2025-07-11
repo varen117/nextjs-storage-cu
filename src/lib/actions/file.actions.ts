@@ -96,3 +96,27 @@ const createQueries = (currentUser: Models.Document) => {
   // 复杂查询，条件，排序等
   return query;
 };
+//文件重命名
+export const renameFile = async ({
+  fileId,
+  name,
+  extension,
+  path,
+}: RenameFileProps) => {
+  const { databases } = await createAdminClient();
+  try {
+    const newName = `${name}.${extension}`;
+    const updateFile = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+      {
+        name: newName,
+      },
+    );
+    revalidatePath(path);
+    return parseStringify(updateFile);
+  } catch (error) {
+    handleError(error, "Failed to rename file");
+  }
+};
