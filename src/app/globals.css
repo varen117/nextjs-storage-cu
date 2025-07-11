@@ -355,10 +355,10 @@ body {
   @apply font-medium text-brand-100;
 }
 .modal-cancel-button {
-  @apply h-[52px] flex-1 rounded-full bg-white text-light-100 hover:bg-transparent;
+  @apply h-[52px] flex-1 rounded-full bg-gray-100 text-light-100 hover:bg-gray-200 cursor-pointer;
 }
 .modal-submit-button {
-  @apply bg-brand hover:bg-brand-100 transition-all rounded-full text-[14px] leading-[20px] font-medium !mx-0 h-[52px] w-full flex-1;
+  @apply bg-brand hover:bg-brand-100 transition-all rounded-full text-[14px] leading-[20px] font-medium !mx-0 h-[52px] w-full flex-1 cursor-pointer;
 }
 
 /* ActionsModalContent */
@@ -379,10 +379,14 @@ body {
   @apply text-[14px] leading-[20px] font-normal outline-none ring-offset-transparent focus:ring-transparent focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 h-[52px] w-full rounded-full border px-4 shadow-drop-1;
 }
 .share-remove-user {
-  @apply rounded-full bg-transparent text-light-100 shadow-none hover:bg-transparent;
+  @apply rounded-full bg-transparent text-light-100 shadow-none hover:bg-gray-200 cursor-pointer;
 }
 .remove-icon {
   @apply aspect-square rounded-full;
+}
+
+.remove-icon-loading {
+  @apply aspect-square rounded-full bg-red;
 }
 
 /* AuthForm */

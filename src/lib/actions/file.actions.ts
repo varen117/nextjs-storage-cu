@@ -120,3 +120,32 @@ export const renameFile = async ({
     handleError(error, "Failed to rename file");
   }
 };
+
+interface UpdateFileUsersProps {
+  fileId: string;
+  emails: string[];
+  path: string;
+}
+
+//共享文件
+export const updateFileUsers = async ({
+  fileId,
+  emails,
+  path,
+}: UpdateFileUsersProps) => {
+  const { databases } = await createAdminClient();
+  try {
+    const updateFile = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+      {
+        users: emails,
+      },
+    );
+    revalidatePath(path);
+    return parseStringify(updateFile);
+  } catch (error) {
+    handleError(error, "File sharing failed");
+  }
+};

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -22,12 +23,15 @@ import {
 import Image from "next/image";
 import { actionsDropdownItems } from "@/constants/";
 import Link from "next/link";
-import { constructDownloadUrl } from "@/lib/utils";
+import { constructDownloadUrl, handleError } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
-import { renameFile } from "@/lib/actions/file.actions";
-import { ActionsModalContent } from "@/components/ActionsModalContent";
+import { renameFile, updateFileUsers } from "@/lib/actions/file.actions";
+import {
+  ActionsModalContent,
+  ShareInput,
+} from "@/components/ActionsModalContent";
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,6 +40,8 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [name, setName] = useState(file.name);
   const [isLoading, setIsLoading] = useState(false);
   const path = usePathname();
+  //共享文件email数组
+  const [emails, setEmails] = useState<string[]>([]);
   //对话框
   const renderDialogContent = () => {
     if (!action) {
@@ -48,6 +54,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
           <DialogTitle className="text-center text-light-100">
             {label}
           </DialogTitle>
+          {/*重命名*/}
           {value === "rename" && (
             <Input
               type="text"
@@ -55,7 +62,23 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
               onChange={(e) => setName(e.target.value)}
             />
           )}
+          {/*查看详情*/}
           {value === "details" && <ActionsModalContent file={file} />}
+          {/*分享*/}
+          {value === "share" && (
+            <ShareInput
+              file={file}
+              onInputChange={setEmails}
+              onRemove={handleRemoveUser}
+            />
+          )}
+          {/*删除*/}
+          {value === "delete" && (
+            <p className="delete-confirmation">
+              Are you sure you want to delete{" "}
+              <span className="delete-file-name">{file.name}</span>
+            </p>
+          )}
         </DialogHeader>
         {["rename", "share", "delete"].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row ">
@@ -98,7 +121,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     const actions = {
       rename: () =>
         renameFile({ fileId: file.$id, name, extension: file.extension, path }),
-      share: () => console.log("share"),
+      share: () => updateFileUsers({ fileId: file.$id, emails, path }),
       delete: () => console.log("delete"),
     };
     success = await actions[action.value as keyof typeof actions]();
@@ -107,7 +130,19 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     }
     setIsLoading(false);
   };
-
+  // 从共享列表中移除某个用户
+  const handleRemoveUser = async (email: string) => {
+    const updateEmails = emails.filter((e) => email !== e);
+    const success = await updateFileUsers({
+      fileId: file.$id,
+      emails: updateEmails,
+      path,
+    });
+    if (success) {
+      setEmails(updateEmails);
+    }
+    closeAllModals();
+  };
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -173,5 +208,4 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     </Dialog>
   );
 };
-
 export default ActionDropdown;
