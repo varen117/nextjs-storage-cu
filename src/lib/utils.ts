@@ -167,3 +167,39 @@ export const formatDateTime = (isoString: string | null | undefined) => {
 export const constructDownloadUrl = (bucketFileId: string) => {
   return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
 };
+
+/**
+ * 根据路由参数获取对应的文件类型数组
+ * @param type 路由参数（如: documents, images, media, others）
+ * @returns 对应的文件类型数组
+ */
+export const getFileTypesParams = (type: string): FileType[] => {
+  // 规范化输入参数，移除可能的前后空格和特殊字符
+  const normalizedType = type?.toLowerCase().trim();
+
+  switch (normalizedType) {
+    case "documents":
+      return ["document"];
+    case "images":
+      return ["image"];
+    case "media":
+      return ["video", "audio"];
+    case "others":
+      return ["other"];
+    case "": // 空字符串或根路径
+    case "dashboard":
+    case "all":
+      return ["document", "image", "video", "audio", "other"]; // 返回所有类型
+    default:
+      // 如果传入的是单个文件类型，检查是否有效
+      if (
+        ["document", "image", "video", "audio", "other"].includes(
+          normalizedType,
+        )
+      ) {
+        return [normalizedType as FileType];
+      }
+      // 默认返回所有类型，确保不会因为未知路由参数导致空结果
+      return ["document", "image", "video", "audio", "other"];
+  }
+};

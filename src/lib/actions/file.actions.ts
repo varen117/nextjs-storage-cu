@@ -12,6 +12,7 @@ import { appwriteConfig } from "@/lib/appwrite/config";
 import { ID, Models, Query } from "node-appwrite";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getCurrentUser } from "@/lib/actions/user.actions";
+import { FileType } from "@/constants";
 
 export const uploadFile = async ({
   file,
@@ -66,14 +67,14 @@ export const uploadFile = async ({
 };
 
 //获取文件
-export const getFiles = async () => {
+export const getFiles = async ({ types }: GetFilesProps) => {
   const { databases } = await createAdminClient();
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       throw new Error("No user found");
     }
-    const query = createQueries(currentUser);
+    const query = createQueries(currentUser, types);
     const files = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.filesCollectionId,
@@ -85,7 +86,7 @@ export const getFiles = async () => {
   }
 };
 //查询数据
-const createQueries = (currentUser: Models.Document) => {
+const createQueries = (currentUser: Models.Document, types: FileType[]) => {
   const query = [
     Query.or([
       Query.equal("owner", [currentUser.$id]),
@@ -93,6 +94,9 @@ const createQueries = (currentUser: Models.Document) => {
     ]),
   ];
   // 复杂查询，条件，排序等
+  if (types.length > 0) {
+    query.push(Query.equal("type", types));
+  }
   return query;
 };
 //文件重命名
