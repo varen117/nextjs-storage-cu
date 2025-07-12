@@ -46,6 +46,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const path = usePathname();
   //共享文件email数组
   const [emails, setEmails] = useState<string[]>([]);
+  
   //对话框
   const renderDialogContent = () => {
     if (!action) {
@@ -113,8 +114,9 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     setIsDropdownOpen(false);
     setAction(null);
     setName(file.name);
-    // setEmails([])
+    setEmails([]); // 重置emails
   };
+  
   // 设置操作
   const handleAction = async () => {
     if (!action) {
@@ -135,19 +137,28 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     }
     setIsLoading(false);
   };
-  // 从共享列表中移除某个用户
-  const handleRemoveUser = async (email: string) => {
-    const updateEmails = emails.filter((e) => email !== e);
-    const success = await updateFileUsers({
-      fileId: file.$id,
-      emails: updateEmails,
-      path,
-    });
-    if (success) {
-      setEmails(updateEmails);
+  
+  // 从共享列表中移除某个用户 - 返回Promise<boolean>
+  const handleRemoveUser = async (email: string): Promise<boolean> => {
+    try {
+      const updateEmails = emails.filter((e) => email !== e);
+      const success = await updateFileUsers({
+        fileId: file.$id,
+        emails: updateEmails,
+        path,
+      });
+      
+      if (success) {
+        setEmails(updateEmails);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Failed to remove user:", error);
+      return false;
     }
-    closeAllModals();
   };
+  
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -213,4 +224,5 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     </Dialog>
   );
 };
+
 export default ActionDropdown;
