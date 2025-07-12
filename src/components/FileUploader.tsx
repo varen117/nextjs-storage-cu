@@ -68,77 +68,26 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
       // 先将有效文件添加到UI中显示
       setFiles((prevFiles) => [...prevFiles, ...validNewFiles]);
 
-      try {
-        // 并行上传所有有效文件，等待所有上传完成
-        const uploadPromises = validNewFiles.map((file) =>
-          uploadFile({ file, ownerId, accountId, path, fullName }),
-        );
-        // 这样做的最主要原因是：需要等所有文件都上传完成后，才能统一处理上传结果（如移除已上传文件、显示成功或失败的提示），
-        // 保证UI和数据状态与所有上传操作的最终结果保持一致，避免部分文件上传未完成时就提前更新界面或提示用户。
-        const uploadResults = await Promise.all(uploadPromises);
-
-        // 所有上传完成后，从UI中移除成功上传的文件
-        setFiles((prevFiles) => {
-          const successfullyUploadedFileNames = validNewFiles
-            .filter((_, index) => uploadResults[index]) // 只保留上传成功的文件
-            .map((file) => file.name);
-
-          return prevFiles.filter(
-            (file) => !successfullyUploadedFileNames.includes(file.name),
-          );
-        });
-
-        // 显示成功提示
-        const successCount = uploadResults.filter(Boolean).length;
-        if (successCount > 0) {
-          toast.success(`Successfully uploaded ${successCount} file(s)`, {
-            style: {
-              background: "#3DD9B3",
-              borderRadius: 20,
-            },
-            classNames: {
-              description: "!text-white",
-              title: "!text-white !font-bold",
-            },
-          });
-        }
-
-        // 如果有失败的上传，显示错误提示
-        const failureCount = validNewFiles.length - successCount;
-        if (failureCount > 0) {
-          toast.error(`Failed to upload ${failureCount} file(s)`, {
-            style: {
-              background: "#FA7275",
-              borderRadius: 20,
-            },
-            classNames: {
-              description: "!text-white",
-              title: "!text-white !font-bold",
-            },
-          });
-        }
-      } catch (error) {
-        // 上传失败，移除所有刚添加的文件
-        setFiles((prevFiles) => {
-          const newFileNames = validNewFiles.map((file) => file.name);
-          return prevFiles.filter((file) => !newFileNames.includes(file.name));
-        });
-
-        // 显示错误提示
-        toast.error("Upload failed", {
-          description: "Please try again later.",
-          style: {
-            background: "#FA7275",
-            borderRadius: 20,
+      // 并行上传所有有效文件，等待所有上传完成
+      const uploadPromises = validNewFiles.map((file) =>
+        uploadFile({ file, ownerId, accountId, path, fullName }).then(
+          (uploadedFile) => {
+            if (uploadedFile) {
+              setFiles((prevFiles) =>
+                prevFiles.filter((f) => f.name !== file.name),
+              );
+            }
           },
-          classNames: {
-            description: "!text-white",
-            title: "!text-white !font-bold",
-          },
-        });
+        ),
+      );
+      // 这样做的最主要原因是：需要等所有文件都上传完成后，才能统一处理上传结果（如移除已上传文件、显示成功或失败的提示），
+      // 保证UI和数据状态与所有上传操作的最终结果保持一致，避免部分文件上传未完成时就提前更新界面或提示用户。
+      const uploadResults = await Promise.all(uploadPromises);
+      if (uploadPromises.length > 0) {
+        toast.success(`Successfully uploaded ${uploadPromises.length} file(s)`);
       }
     },
-    [ownerId, accountId, path, fullName],
+    [ownerId, accountId, path],
   );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
