@@ -10,14 +10,16 @@ import Card from "@/components/Card";
  * @param params
  * @constructor
  */
-const Page = async ({ params }: { params: Promise<{ types: string }> }) => {
+const Page = async ({ params, searchParams }: SearchParamProps) => {
   const type = ((await params)?.types as string) || "";
   const types = getFileTypesParams(type);
+  const searchText = ((await searchParams)?.query as string) || "";
+  const sort = ((await searchParams)?.sort as string) || "";
   // 加 await 和不加的区别：
   // 1. 加 await：getFiles() 是一个异步函数，返回 Promise。加 await 会等待 getFiles() 执行完毕，拿到真正的数据对象 files。
   // 2. 不加 await：files 只是一个 Promise 对象，还没有真正的数据，后续代码直接用 files.documents 会报错或拿不到数据。
   // 只有加了 await，才能拿到 getFiles() 返回的实际数据，否则只是一个 Promise。
-  const files = await getFiles({ types });
+  const files = await getFiles({ types, searchText, sort });
   return (
     <div className="page-container">
       <section className="w-full">

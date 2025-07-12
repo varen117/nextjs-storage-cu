@@ -67,14 +67,19 @@ export const uploadFile = async ({
 };
 
 //获取文件
-export const getFiles = async ({ types }: GetFilesProps) => {
+export const getFiles = async ({
+  types = [],
+  searchText = "",
+  sort = "$createdAt-desc",
+  limit = 20,
+}: GetFilesProps) => {
   const { databases } = await createAdminClient();
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       throw new Error("No user found");
     }
-    const query = createQueries(currentUser, types);
+    const query = createQueries(currentUser, types, searchText, sort, limit);
     const files = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.filesCollectionId,
@@ -86,16 +91,41 @@ export const getFiles = async ({ types }: GetFilesProps) => {
   }
 };
 //查询数据
-const createQueries = (currentUser: Models.Document, types: FileType[]) => {
+const createQueries = (
+  currentUser: Models.Document,
+  types: FileType[],
+  searchText: string,
+  sort: string,
+  limit?: number,
+) => {
   const query = [
     Query.or([
       Query.equal("owner", [currentUser.$id]),
       Query.contains("users", [currentUser.email]),
     ]),
   ];
-  // 复杂查询，条件，排序等
+  // 文件类型条件
   if (types.length > 0) {
     query.push(Query.equal("type", types));
+  }
+  //搜索
+  if (searchText) {
+    query.push(Query.contains("name", searchText));
+  }
+  //排序
+  if (sort) {
+    console.log("------========");
+    console.log(sort);
+    const [sortBy, orderBy] = sort.split("-");
+    if (sortBy && orderBy) {
+      query.push(
+        orderBy === "asc" ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy),
+      );
+    }
+  }
+  //分页
+  if (limit) {
+    query.push(Query.limit(limit));
   }
   return query;
 };
