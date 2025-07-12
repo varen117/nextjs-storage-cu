@@ -140,13 +140,13 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
         });
       }
     },
-    [ownerId, accountId, path],
+    [ownerId, accountId, path, fullName],
   );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleRemoveFile = (
-    e: MouseEvent<HTMLImageElement>,
+    e: MouseEvent<HTMLButtonElement>,
     fileName: string,
   ) => {
     // 阻止事件冒泡，防止点击删除按钮时触发父级的上传区域点击事件
@@ -160,7 +160,7 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
       <Button type="button" className={cn("uploader-button")}>
         <Image
           src="/assets/icons/upload.svg"
-          alt="logo"
+          alt="upload"
           width={24}
           height={24}
         />
@@ -176,32 +176,59 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
                 key={`${file.name}-${index}`}
                 className="uploader-preview-item"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
                   <Thumbnail
                     type={type}
                     extension={extension}
                     url={convertFileToUrl(file)}
                   />
-                  <div className="preview-item-name">
-                    {file.name}
-                    <Image
-                      src="/assets/icons/file-loader.gif"
-                      alt="loader"
-                      width={80}
-                      height={26}
-                      unoptimized
-                      style={{ width: "80px", height: "26px" }} // 明确指定尺寸
-                      className="ml-2"
-                    />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-900 truncate">
+                        {file.name}
+                      </span>
+                      <div className="flex-shrink-0">
+                        <Image
+                          src="/assets/icons/file-loader.gif"
+                          alt="uploading"
+                          width={80}
+                          height={26}
+                          unoptimized
+                          className="w-auto h-4 sm:h-5 md:h-6 max-w-[80px]"
+                          style={{ 
+                            objectFit: 'contain'
+                          }}
+                          onError={(e) => {
+                            console.error('GIF loading error');
+                            // 如果GIF加载失败，显示文本
+                            e.currentTarget.style.display = 'none';
+                            const fallback = e.currentTarget.parentElement?.querySelector('.fallback-text');
+                            if (fallback) {
+                              (fallback as HTMLElement).style.display = 'inline-block';
+                            }
+                          }}
+                        />
+                        <span className="fallback-text hidden text-xs text-gray-500 px-2 py-1 bg-gray-100 rounded">
+                          Uploading...
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <Image
-                  src="/assets/icons/remove.svg"
-                  alt="remove"
-                  width={24}
-                  height={24}
+                
+                <button
+                  type="button"
                   onClick={(e) => handleRemoveFile(e, file.name)}
-                />
+                  className="flex-shrink-0 p-2 hover:opacity-80 transition-opacity rounded-full hover:bg-gray-100"
+                  aria-label={`Remove ${file.name}`}
+                >
+                  <Image
+                    src="/assets/icons/remove.svg"
+                    alt="remove"
+                    width={20}
+                    height={20}
+                  />
+                </button>
               </li>
             );
           })}
