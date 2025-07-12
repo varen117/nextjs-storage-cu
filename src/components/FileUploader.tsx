@@ -189,7 +189,9 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
                       alt="loader"
                       width={80}
                       height={26}
-                      unoptimized //unoptimized 跳过优化 - 直接显示原始 GIF
+                      unoptimized
+                      style={{ width: "80px", height: "26px" }} // 明确指定尺寸
+                      className="ml-2"
                     />
                   </div>
                 </div>

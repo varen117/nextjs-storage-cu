@@ -149,3 +149,31 @@ export const updateFileUsers = async ({
     handleError(error, "File sharing failed");
   }
 };
+
+// 文件删除功能
+interface DeleteFileUsersProps {
+  fileId: string;
+  bucketFileId: string;
+  path: string;
+}
+export const deleteFile = async ({
+  fileId,
+  bucketFileId,
+  path,
+}: DeleteFileUsersProps) => {
+  const { databases, storage } = await createAdminClient();
+  try {
+    const deleteFile = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+    );
+    if (deleteFile) {
+      await storage.deleteFile(appwriteConfig.bucketId, bucketFileId);
+    }
+    revalidatePath(path);
+    return parseStringify({ status: "success" });
+  } catch (error) {
+    handleError(error, "File sharing failed");
+  }
+};
