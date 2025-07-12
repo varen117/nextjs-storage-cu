@@ -6,7 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker:build": "docker build --no-cache -t nextjs-storage-app .",
+    "docker:build:clean": "docker system prune -f && docker build --no-cache --pull .  --platform linux/amd64 -t nextjs-storage-app",
+    "docker:run": "docker run -p 3000:3000 --name nextjs-storage-container --env-file .env nextjs-storage-app",
+    "docker:run:detach": "docker run -d -p 3000:3000 --name nextjs-storage-container --env-file .env nextjs-storage-app",
+    "docker:stop": "docker stop nextjs-storage-container",
+    "docker:remove": "docker rm nextjs-storage-container",
+    "docker:dev": "npm run docker:build && npm run docker:run",
+    "docker:clean": "docker system prune -af && docker image prune -af"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

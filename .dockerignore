@@ -1,0 +1,118 @@
+# Node.js 相关文件
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js 构建输出
+.next/
+out/
+build/
+dist/
+
+# 运行时文件
+*.pid
+*.seed
+*.pid.lock
+
+# 覆盖率目录
+coverage/
+.nyc_output/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# 可选的npm缓存目录
+.npm
+
+# 可选的eslint缓存
+.eslintcache
+
+# Microbundle缓存
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# 可选的REPL历史
+.node_repl_history
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+.vercel.json
+
+# IDE和编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 日志文件
+*.log
+logs/
+
+# 缓存文件
+.cache/
+.parcel-cache/
+.eslintcache
+
+# 文档和说明文件
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# Git相关
+.git/
+.gitignore
+.gitattributes
+
+# Docker相关
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# 配置文件（排除非关键的配置文件，保留构建需要的文件）
+.prettierrc*
+.eslintrc*
+jest.config.*
+cypress.json
+.babelrc*
+# 保留关键的构建配置文件：
+# tsconfig.json - TypeScript配置
+# next.config.ts - Next.js配置
+# tailwind.config.* - Tailwind CSS配置
+# postcss.config.* - PostCSS配置
+# components.json - 组件配置
+
+# 测试相关
+__tests__/
+test/
+tests/
+*.test.*
+*.spec.*
+
+# 临时文件
+tmp/
+temp/

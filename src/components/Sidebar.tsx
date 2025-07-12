@@ -5,17 +5,25 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AvatarUploader from "@/components/AvatarUploader";
 
 interface Props {
   fullName: string;
   avatar: string;
   email: string;
+  $id: string;
+  accountId: string;
 }
 
-const Sidebar = ({ fullName, avatar, email }: Props) => {
+const Sidebar = ({
+  fullName,
+  avatar,
+  email,
+  $id: ownerId,
+  accountId,
+}: Props) => {
   const pathname = usePathname();
-  const isExternalAvatar = avatar.startsWith("http") || avatar.startsWith("https");
-  
+
   return (
     <aside className="sidebar">
       <Link href="/">
@@ -60,7 +68,7 @@ const Sidebar = ({ fullName, avatar, email }: Props) => {
           ))}
         </ul>
       </nav>
-      
+
       <div className="w-full">
         <Image
           src="/assets/images/files-2.png"
@@ -70,15 +78,22 @@ const Sidebar = ({ fullName, avatar, email }: Props) => {
           className="w-full h-auto"
         />
       </div>
-      
+
       <div className="sidebar-user-info">
-        <Image
-          src={avatar}
-          alt="Avatar"
-          width={44}
-          height={44}
-          unoptimized={isExternalAvatar}
-          className="sidebar-user-avatar rounded-full object-cover"
+        {/*<Image*/}
+        {/*  src={avatar}*/}
+        {/*  alt="Avatar"*/}
+        {/*  width={44}*/}
+        {/*  height={44}*/}
+        {/*  unoptimized={isExternalAvatar}*/}
+        {/*  className="sidebar-user-avatar rounded-full object-cover"*/}
+        {/*  onClick={updateUserAvatar}*/}
+        {/*/>*/}
+        <AvatarUploader
+          ownerId={ownerId}
+          accountId={accountId}
+          fullName={accountId}
+          avatar={avatar}
         />
         <div className="hidden lg:block">
           <p className="subtitle-2 capitalize">{fullName}</p>

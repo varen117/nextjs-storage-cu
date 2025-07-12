@@ -2,10 +2,17 @@
 import { createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { appwriteConfig } from "@/lib/appwrite/config";
 import { ID, Query, Account, Client } from "node-appwrite";
-import { handleError, parseStringify } from "@/lib/utils";
+import {
+  constructFileUrl,
+  getFileType,
+  handleError,
+  parseStringify,
+} from "@/lib/utils";
 import { cookies } from "next/headers";
 import { avatarPlaceholderUrl } from "@/constants";
 import { redirect } from "next/navigation";
+import { InputFile } from "node-appwrite/file";
+import { revalidatePath } from "next/cache";
 
 export const createAccount = async ({
   fullName,
@@ -122,5 +129,30 @@ export const signInUser = async ({ email }: { email: string }) => {
     return parseStringify({ accountId: null, error: "User not found" });
   } catch (error) {
     handleError(error, "Error verifying email");
+  }
+};
+
+interface UploadFileProps {
+  url: string;
+  userId: string;
+  path: string;
+}
+
+//修改头像
+export const uploadUser = async ({ url, userId, path }: UploadFileProps) => {
+  const { databases } = await createAdminClient();
+  try {
+    const updateUser = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      userId,
+      {
+        avatar: url,
+      },
+    );
+    revalidatePath(path);
+    return parseStringify(updateUser);
+  } catch (error) {
+    handleError(error, "Failed to update avatar");
   }
 };
