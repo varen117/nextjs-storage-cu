@@ -108,7 +108,6 @@ export const isSupportedFileType = (
 
 //记录错误日志
 export const handleError = (error: unknown, message: string) => {
-  console.log(error);
   throw error;
 };
 // 处理文件大小转换

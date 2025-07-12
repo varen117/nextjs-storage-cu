@@ -118,8 +118,6 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
           });
         }
       } catch (error) {
-        console.error("Upload error:", error);
-
         // 上传失败，移除所有刚添加的文件
         setFiles((prevFiles) => {
           const newFileNames = validNewFiles.map((file) => file.name);
@@ -195,16 +193,19 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
                           height={26}
                           unoptimized
                           className="w-auto h-4 sm:h-5 md:h-6 max-w-[80px]"
-                          style={{ 
-                            objectFit: 'contain'
+                          style={{
+                            objectFit: "contain",
                           }}
                           onError={(e) => {
-                            console.error('GIF loading error');
                             // 如果GIF加载失败，显示文本
-                            e.currentTarget.style.display = 'none';
-                            const fallback = e.currentTarget.parentElement?.querySelector('.fallback-text');
+                            e.currentTarget.style.display = "none";
+                            const fallback =
+                              e.currentTarget.parentElement?.querySelector(
+                                ".fallback-text",
+                              );
                             if (fallback) {
-                              (fallback as HTMLElement).style.display = 'inline-block';
+                              (fallback as HTMLElement).style.display =
+                                "inline-block";
                             }
                           }}
                         />
@@ -215,7 +216,7 @@ const FileUploader = ({ ownerId, accountId, fullName }: Props) => {
                     </div>
                   </div>
                 </div>
-                
+
                 <button
                   type="button"
                   onClick={(e) => handleRemoveFile(e, file.name)}
