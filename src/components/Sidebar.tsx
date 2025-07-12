@@ -5,29 +5,33 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 interface Props {
   fullName: string;
   avatar: string;
   email: string;
 }
+
 const Sidebar = ({ fullName, avatar, email }: Props) => {
   const pathname = usePathname();
+  const isExternalAvatar = avatar.startsWith("http") || avatar.startsWith("https");
+  
   return (
     <aside className="sidebar">
       <Link href="/">
         <Image
-          src="../assets/icons/logo-full-brand.svg"
+          src="/assets/icons/logo-full-brand.svg"
           alt="logo"
           width={160}
           height={50}
-          className="hidden h-auto lg:block"
+          className="hidden lg:block h-auto max-w-[160px]"
         />
         <Image
-          src="../assets/icons/logo-brand.svg"
+          src="/assets/icons/logo-brand.svg"
           alt="logo"
-          width={160}
-          height={50}
-          className="lg:hidden"
+          width={52}
+          height={52}
+          className="lg:hidden h-auto max-w-[52px]"
         />
       </Link>
       <nav className="sidebar-nav">
@@ -56,20 +60,25 @@ const Sidebar = ({ fullName, avatar, email }: Props) => {
           ))}
         </ul>
       </nav>
-      <Image
-        src="/assets/images/files-2.png"
-        alt="logo"
-        width={506}
-        height={418}
-        className="w-full"
-      />
+      
+      <div className="w-full">
+        <Image
+          src="/assets/images/files-2.png"
+          alt="files illustration"
+          width={506}
+          height={418}
+          className="w-full h-auto"
+        />
+      </div>
+      
       <div className="sidebar-user-info">
         <Image
           src={avatar}
           alt="Avatar"
           width={44}
           height={44}
-          className="sidebar-user-avatar"
+          unoptimized={isExternalAvatar}
+          className="sidebar-user-avatar rounded-full object-cover"
         />
         <div className="hidden lg:block">
           <p className="subtitle-2 capitalize">{fullName}</p>

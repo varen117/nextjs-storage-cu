@@ -10,6 +10,7 @@ interface Props {
   imageClassName?: string;
   className?: string;
 }
+
 const Thumbnail = ({
   type,
   extension,
@@ -18,6 +19,8 @@ const Thumbnail = ({
   className,
 }: Props) => {
   const isImage = type === "image" && extension !== "svg";
+  const isExternalUrl = url.startsWith("http") || url.startsWith("https");
+  
   return (
     <figure className={cn("thumbnail", className)}>
       <Image
@@ -25,6 +28,8 @@ const Thumbnail = ({
         alt="thumbnail"
         width={100}
         height={100}
+        // 对于外部图片URL（如Appwrite），禁用优化以避免认证问题
+        unoptimized={isImage && isExternalUrl}
         // cn函数用于合并多个className字符串，并自动去除无效或重复的类名
         // 用法：cn(基础类名, 可选类名, 条件类名)
         // 这里将基础样式、外部传入的imageClassName和isImage为true时的"thumbnail-image"合并

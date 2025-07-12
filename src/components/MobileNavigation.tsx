@@ -18,6 +18,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+
 interface Props {
   fullName: string;
   avatar: string;
@@ -25,6 +26,7 @@ interface Props {
   accountId: string;
   $id: string;
 }
+
 const MobileNavigation = ({
   fullName,
   avatar,
@@ -34,11 +36,12 @@ const MobileNavigation = ({
 }: Props) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const isExternalAvatar = avatar.startsWith("http") || avatar.startsWith("https");
 
   return (
     <header className="mobile-header">
       <Image
-        src="../assets/icons/logo-full-brand.svg"
+        src="/assets/icons/logo-full-brand.svg"
         alt="logo"
         width={120}
         height={52}
@@ -47,7 +50,7 @@ const MobileNavigation = ({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
           <Image
-            src="../assets/icons/menu.svg"
+            src="/assets/icons/menu.svg"
             alt="Search"
             width={30}
             height={30}
@@ -62,7 +65,8 @@ const MobileNavigation = ({
                   alt="avatar"
                   height={44}
                   width={44}
-                  className="header-user-avatar"
+                  unoptimized={isExternalAvatar}
+                  className="header-user-avatar rounded-full object-cover"
                 />
                 <div className="sm:hidden lg:block">
                   <p className="subtitle-2 capitalize">{fullName}</p>
@@ -111,8 +115,8 @@ const MobileNavigation = ({
                   onClick={async () => await signOutUser()}
                 >
                   <Image
-                    src="../assets/icons/logout.svg"
-                    alt="logo"
+                    src="/assets/icons/logout.svg"
+                    alt="logout"
                     width={24}
                     height={24}
                   />
