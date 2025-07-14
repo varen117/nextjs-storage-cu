@@ -65,7 +65,7 @@ docker build . --platform linux/amd64 -t storage-app
 ```
 # 推送到github包管理器中
 ## 生成token令牌
-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
+gxxxxxxxxZ
 ## 登陆ghcr.io
 ```shell
 docker login ghcr.io
